@@ -18,10 +18,13 @@ to the project owner first and recorded here once settled.
 | D-010 | Logging goes to CSV/JSON files; no Weights & Biases. | Project owner's choice. |
 | D-011 | The one-page proposal is deferred. | Project owner's choice; team details not yet available. |
 | D-012 | pandas 2.2.3 locally; code avoids pandas-3-only behaviour. | Colab most likely ships pandas 2.2.x; to be checked against the first setup-cell output. |
+| D-013 | The split group is the **work** (confirms D-009). | Audit: no `composition_id` occurs in two work folders, so work groups contain whole movements. Near-duplicate re-releases (same pianist + movement) stay inside one group. |
+| D-014 | K (`min_compositions`) stays 8; it does not bind for N<=10. | Audit: the 10th pianist by distinct works has 67 works; 43 pianists have >= 8. |
+| D-015 | Main result uses N=5 pianists, N=10 is an extra run from the same feature table; both ranked by distinct works. | Demo scope. N=5: 3716 performances, 434 works, 296 h. N=10: 5666 performances, 447 works, 469 h. |
+| D-016 | The XGBoost demo also runs a performance-level random split next to the work-disjoint split (leakage analysis). | Audit: 2402 near-duplicate pairs (same pianist and movement, duration within 1 %, mostly re-releases); a random split puts copies on both sides and inflates accuracy. |
+| D-017 | Pedal features use on-time and on-value, not a half-pedal fraction. | Audit: every CC64/CC67 event is a (value > 0, then 0) pair, so the fraction of intermediate values is exactly 0.5 in every file and carries no information. |
 
-## Open (to be decided after the M1 audit)
+## Open
 
-- K (minimum distinct compositions per pianist), and whether "composition" means work or movement for counting.
-- Split grouping level (work vs movement), and how to handle very large work groups.
 - Whether a recording-disjoint split (by album) is feasible.
-- How to treat near-duplicate performances.
+- How to treat near-duplicate performances beyond keeping them in one work group (e.g. dropping them for the random split).

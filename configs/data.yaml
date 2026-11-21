@@ -33,9 +33,9 @@ selection:
   # Unit used when counting "distinct compositions" per pianist and when grouping
   # splits: "work" (folder level 2 of midi_path, e.g. a whole sonata) or "movement"
   # (composition_id).
-  group_level: work
-  min_compositions: 8        # K  -- TBD after audit
-  n_classes: [10, 20]        # class-set sizes; pianists ranked by distinct compositions
+  group_level: work          # D-013: no composition_id spans two work folders
+  min_compositions: 8        # K; non-binding for N<=10 (10th pianist has 67 works), D-014
+  n_classes: [5, 10]         # D-015: N=5 is the main result, N=10 an extra run
 
 splits:
   seeds: [0, 1, 2]
