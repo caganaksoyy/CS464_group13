@@ -20,7 +20,7 @@ def test_data_config_default_and_tiny(monkeypatch: pytest.MonkeyPatch) -> None:
     cfg = C.load_data_config()
     assert cfg.columns.perf_id == "perf_id"
     assert cfg.columns.pianist == "artist"
-    assert cfg.selection.n_classes == [10, 20]
+    assert cfg.selection.n_classes == [5, 10]
     tiny = C.load_data_config(tiny=True)
     assert tiny.selection.n_classes == [3]
     assert tiny.columns.pianist == "artist"          # untouched keys survive the merge
