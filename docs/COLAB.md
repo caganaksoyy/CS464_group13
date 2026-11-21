@@ -2,10 +2,10 @@
 
 ## One-time setup
 
-1. **Push this repo to GitHub** as a private repository called `pianist-id`.
+1. **Push this repo to GitHub** as a private repository called `CS464_group13`.
 2. **Create a GitHub token** that Colab can use to clone the private repo:
    GitHub → Settings → Developer settings → Personal access tokens → *Fine-grained
-   tokens* → Generate. Repository access: *Only select repositories* → `pianist-id`.
+   tokens* → Generate. Repository access: *Only select repositories* → `CS464_group13`.
    Permissions: *Contents: Read-only*. Copy the token.
 3. **Add two Colab secrets** (key icon in the left sidebar of any Colab notebook):
    - `GITHUB_USER`: your GitHub user name
@@ -29,7 +29,7 @@
 ## Opening a notebook
 
 In Colab: *File → Open notebook → GitHub*, tick *Include private repos* (authorise
-Colab on GitHub once), choose `pianist-id` and the notebook. Alternatively upload the
+Colab on GitHub once), choose `CS464_group13` and the notebook. Alternatively upload the
 `.ipynb` from your computer. The setup cell always clones/pulls the latest code from
 GitHub, so the library code is up to date either way.
 
@@ -38,7 +38,7 @@ GitHub, so the library code is up to date either way.
 Run the setup cell first (or *Runtime → Run all*). It:
 
 1. mounts Drive,
-2. clones the repo into `/content/pianist-id`, or pulls if it is already there,
+2. clones the repo into `/content/CS464_group13`, or pulls if it is already there,
 3. installs `requirements.txt` and the package (`pip install -e . --no-deps`),
 4. sets `PIANIST_ID_ROOT=/content/drive/MyDrive/pianist-id` and
    `PIANIST_ID_LOCAL=/content/local`,

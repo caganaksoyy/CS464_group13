@@ -6,7 +6,7 @@ to the project owner first and recorded here once settled.
 
 | ID | Decision | Reason |
 |---|---|---|
-| D-001 | The repository root is this folder. On GitHub it is `pianist-id` (private). Colab clones it with a fine-grained personal access token stored in Colab Secrets (`GITHUB_USER`, `GITHUB_TOKEN`). | Private repo; keeps the token out of notebooks and output (the setup cell masks it in error messages). |
+| D-001 | The repository root is this folder. On GitHub it is `CS464_group13` (private). Colab clones it with a fine-grained personal access token stored in Colab Secrets (`GITHUB_USER`, `GITHUB_TOKEN`). | Private repo; keeps the token out of notebooks and output (the setup cell masks it in error messages). |
 | D-002 | Local development uses Python 3.12 in `.venv`. | Stays close to Colab's Python version (the machine's default is 3.14), so local tests behave like Colab. |
 | D-003 | Two storage roots: `PIANIST_ID_ROOT` (Drive, persistent) and `PIANIST_ID_LOCAL` (Colab VM disk, fast). The archive is re-extracted to local disk each session; the cache is copied there. | Reading ~11k small files from Drive is slow. Extracting 212 MB takes about a minute. |
 | D-004 | `requirements.txt` pins only packages Colab does not preinstall. Preinstalled ones (torch, numpy, pandas, scikit-learn, ...) are left alone; `pip install -e . --no-deps`. Versions are printed by every setup cell and saved with every run. | Avoids breaking Colab's CUDA torch and its pinned numpy/pandas; still reproducible through the recorded versions. |
