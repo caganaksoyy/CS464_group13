@@ -1,0 +1,12 @@
+# Packages installed on Colab by the setup cell of every notebook.
+#
+# Policy (see docs/DECISIONS.md, D-004):
+#   * Packages that Colab does NOT preinstall are pinned exactly here.
+#   * Packages Colab DOES preinstall (numpy, pandas, scikit-learn, torch, matplotlib,
+#     pyarrow, pyyaml) are NOT listed, so we never downgrade/replace them and never
+#     reinstall torch. The setup cell prints their versions; once the first Colab run
+#     reports them, they are recorded in docs/COLAB_VERSIONS.md.
+#
+# More packages (symusic, xgboost/lightgbm, shap, umap-learn) are added in later
+# milestones when the code that needs them exists.
+pretty_midi==0.2.11.post0

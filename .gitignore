@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Local data / workspace (real data lives on Google Drive, never in git)
+/workspace/
+/data/
+/cache/
+splits/*.csv
+*.zip
+*.mid
+*.midi
+*.npz
+*.parquet
+*.pt
+
+# Results: keep only small summaries and final figures
+results/**
+!results/.gitkeep
+!results/**/
+!results/**/summary*.csv
+!results/**/summary*.json
+!results/figures/**
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

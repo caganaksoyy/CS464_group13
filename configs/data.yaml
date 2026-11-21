@@ -1,0 +1,54 @@
+# Data configuration: metadata columns, filtering, pianist selection, splits, segments.
+# Values marked TBD are set after the M1 data audit (notebook 00) and logged in
+# docs/DECISIONS.md.
+
+# Metadata file inside the extracted ATEPP archive (searched recursively).
+metadata_file: ATEPP-metadata-1.2.csv
+repeats_file: repeats.csv
+
+# Mapping from our role names to ATEPP column names. Taken from the public CSV header
+# on GitHub; notebook 00 verifies them against the archive version.
+columns:
+  perf_id: perf_id            # 5-digit id, matches the .mid file name; always read as string
+  pianist: artist
+  pianist_id: artist_id
+  composer: composer
+  composition_id: composition_id   # per MOVEMENT/piece (see DATA_NOTES.md)
+  title: track                # "Work title: movement title"
+  duration_s: track_duration  # seconds
+  midi_path: midi_path        # Composer/Work/Movement/NNNNN.mid, relative to dataset root
+  score_path: score_path      # not used by this project
+  quality: quality
+  repetition: repetition
+  album: album
+  album_date: album_date
+  youtube: youtube_links
+
+quality:
+  # Tags whose performances are removed. "low quality" and "background noise" follow
+  # the ATEPP authors' recommendation; "corrupted" is the confirmed-broken subset.
+  exclude_tags: ["low quality", "background noise", "corrupted"]
+
+selection:
+  # Unit used when counting "distinct compositions" per pianist and when grouping
+  # splits: "work" (folder level 2 of midi_path, e.g. a whole sonata) or "movement"
+  # (composition_id).
+  group_level: work
+  min_compositions: 8        # K  -- TBD after audit
+  n_classes: [10, 20]        # class-set sizes; pianists ranked by distinct compositions
+
+splits:
+  seeds: [0, 1, 2]
+  fractions: [0.70, 0.15, 0.15]   # train / val / test, by performance count
+  n_folds: 5
+
+segments:
+  length_s: 20.0
+  hop_train_s: 10.0
+  hop_eval_s: 20.0
+  min_notes: 10
+
+audit:
+  midi_sample_size: 300      # MIDI files parsed in notebook 00 for timing/pedal stats
+  near_duplicate_tol: 0.01   # relative duration difference for near-duplicate flags
+  k_values: [3, 5, 8, 10, 12, 15, 20, 30]

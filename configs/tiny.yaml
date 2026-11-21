@@ -1,0 +1,16 @@
+# CPU smoke-test overrides. Each top-level key names the config file it overrides
+# (data -> configs/data.yaml, ...). Activated by the environment variable
+# PIANIST_ID_TINY=1 (the test suite sets it) or by passing tiny=True to the loader.
+
+data:
+  selection:
+    min_compositions: 2
+    n_classes: [3]
+  audit:
+    midi_sample_size: 20
+    k_values: [1, 2, 3]
+  segments:
+    length_s: 5.0
+    hop_train_s: 2.5
+    hop_eval_s: 5.0
+    min_notes: 3
