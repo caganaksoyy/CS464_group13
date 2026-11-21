@@ -33,3 +33,19 @@ def test_notebook_00_data_audit(storage: Path) -> None:
                     "### Duplicate summary", "### MIDI sample: distribution"):
         assert heading in text
     assert (storage / "results" / "audit" / "pianist_stats_filtered.csv").exists()
+
+
+@pytest.mark.slow
+def test_notebook_01_xgboost(storage: Path) -> None:
+    run_notebook("01_xgboost_baseline.ipynb")
+    run_dirs = sorted((storage / "results" / "xgb_baseline").iterdir())
+    assert len(run_dirs) == 1
+    run_dir = run_dirs[0]
+    for name in ("runs.csv", "summary_N3.csv", "confusion.png", "importance.png",
+                 "importance_groups_N3.csv", "run_info.json", "summary.json"):
+        assert (run_dir / name).exists(), name
+    import pandas as pd
+    runs = pd.read_csv(run_dir / "runs.csv")
+    assert set(runs["split"]) == {"work", "random"} and len(runs) == 6
+    work = runs[runs["split"] == "work"]
+    assert work["perf_acc"].mean() > work["chance"].iloc[0]

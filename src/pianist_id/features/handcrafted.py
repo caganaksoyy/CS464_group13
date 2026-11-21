@@ -148,9 +148,11 @@ def segment_features(seg: Segment) -> dict[str, float]:
     f["ioi_log_mean"] = _nan_stat(np.mean, log_ioi)
     f["ioi_log_std"] = _nan_stat(np.std, log_ioi)
 
-    edges = np.arange(0.0, seg.length_s + 1e-9, TEMPO_SUBWINDOW_S)
-    rates = np.histogram(chord_onset, bins=edges)[0] / TEMPO_SUBWINDOW_S if len(edges) > 2 \
-        else np.array([])
+    # Equal, half-open sub-windows; a tail shorter than one sub-window is left out.
+    n_sub = int(seg.length_s // TEMPO_SUBWINDOW_S)
+    sub = (chord_onset // TEMPO_SUBWINDOW_S).astype(np.int64)
+    rates = (np.bincount(sub[sub < n_sub], minlength=n_sub) / TEMPO_SUBWINDOW_S
+             if n_sub >= 2 else np.array([]))
     f["tempo_rate_std"] = _nan_stat(np.std, rates)
     f["tempo_rate_cv"] = (float(rates.std() / rates.mean())
                           if len(rates) and rates.mean() > 0 else np.nan)
