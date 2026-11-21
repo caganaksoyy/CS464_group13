@@ -1,0 +1,15 @@
+# XGBoost baseline on handcrafted segment features (notebook 01).
+# `params` go straight to xgboost.XGBClassifier; random_state is set per split seed.
+
+params:
+  n_estimators: 2000          # upper bound; early stopping on val picks the number
+  early_stopping_rounds: 50
+  learning_rate: 0.05
+  max_depth: 6
+  min_child_weight: 1
+  subsample: 0.8
+  colsample_bytree: 0.8
+  reg_lambda: 1.0
+  tree_method: hist
+  eval_metric: mlogloss
+  n_jobs: -1

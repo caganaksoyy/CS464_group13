@@ -7,6 +7,7 @@
 #     reinstall torch. The setup cell prints their versions; once the first Colab run
 #     reports them, they are recorded in docs/COLAB_VERSIONS.md.
 #
-# More packages (symusic, xgboost/lightgbm, shap, umap-learn) are added in later
+# xgboost and scikit-learn (notebook 01) are preinstalled on Colab, so they are not
+# listed. More packages (symusic, lightgbm, shap, umap-learn) are added in later
 # milestones when the code that needs them exists.
 pretty_midi==0.2.11.post0

@@ -14,3 +14,8 @@ data:
     hop_train_s: 2.5
     hop_eval_s: 5.0
     min_notes: 3
+
+xgb:
+  params:
+    n_estimators: 50
+    early_stopping_rounds: 10
