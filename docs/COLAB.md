@@ -53,4 +53,5 @@ If you changed code on GitHub during a session, re-run the setup cell and then
 | Notebook | Runtime | Notes |
 |---|---|---|
 | 00 data audit | CPU | ~2–5 min |
+| 01 XGBoost baseline | CPU | features ~5 min (first run, then cached); 24 fits ~10–15 min (N=10 part optional via `RUN_N10`) |
 | (later notebooks) | see each notebook's header | |

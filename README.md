@@ -7,7 +7,7 @@ articulation, pedalling). Test sets contain only compositions never seen in trai
 
 Data: ATEPP v1.2 (Zhang et al., ISMIR 2022), performance MIDI transcribed from audio.
 
-**Status: Milestone 1 (data audit).** No results yet.
+**Status: demo - XGBoost baseline on handcrafted expressive features** (notebook 01).
 
 ## Repository layout
 
@@ -16,7 +16,9 @@ configs/            YAML configs (data.yaml; tiny.yaml = CPU smoke-test override
 src/pianist_id/     the library the notebooks import
   paths.py          Drive vs local storage locations
   colab.py          session setup used by every notebook
-  data/             archive extraction, metadata, MIDI parsing (cache/splits in M2)
+  data/             archive extraction, metadata, MIDI parsing, splits, segments
+  features/         handcrafted segment features, grouped by musical aspect
+  models/           XGBoost baseline
   utils/            config loading, seeding, run logging
 notebooks/          what you run on Colab (orchestration, plots, commentary)
 tests/              pytest unit tests + notebook smoke runs on synthetic data
@@ -32,6 +34,7 @@ secret, Drive layout, uploading the ATEPP zip). Then open a notebook and *Run al
 | Notebook | Purpose | Runtime |
 |---|---|---|
 | `00_setup_and_data_audit.ipynb` | schema, quality tags, duplicates, per-pianist stats, MIDI properties | CPU, ~2–5 min |
+| `01_xgboost_baseline.ipynb` | segment features, XGBoost, work-disjoint vs random split, confusion matrix, feature-group importance | CPU, ~15–20 min |
 
 ## Local development (CPU)
 
@@ -49,7 +52,15 @@ different styles) and run every notebook top to bottom in tiny mode
 
 | Model | Split | N | Perf. acc | Macro-F1 |
 |---|---|---|---|---|
-| *placeholder, no results yet* | | | | |
+| XGBoost, handcrafted features | work-disjoint | 5 | 0.754 ± 0.023 | 0.761 ± 0.010 |
+| XGBoost, handcrafted features | random (leaky) | 5 | 0.845 ± 0.005 | 0.843 ± 0.005 |
+| XGBoost, handcrafted features | work-disjoint | 10 | 0.651 ± 0.021 | 0.639 ± 0.022 |
+| XGBoost, handcrafted features | random (leaky) | 10 | 0.790 ± 0.010 | 0.769 ± 0.016 |
+
+Mean ± std over split seeds 0, 1, 2; chance is 1/N. Performance accuracy aggregates the
+20 s segments of each test performance. The work-disjoint split is the real task; the
+random split lets the same piece and re-released recordings appear in train and test, and
+the gap (0.09 for N=5, 0.14 for N=10) is that leakage (D-016).
 
 ## Citation
 
