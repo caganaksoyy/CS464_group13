@@ -23,6 +23,7 @@ to the project owner first and recorded here once settled.
 | D-015 | Main result uses N=5 pianists, N=10 is an extra run from the same feature table; both ranked by distinct works. | Demo scope. N=5: 3716 performances, 434 works, 296 h. N=10: 5666 performances, 447 works, 469 h. |
 | D-016 | The XGBoost demo also runs a performance-level random split next to the work-disjoint split (leakage analysis). | Audit: 2402 near-duplicate pairs (same pianist and movement, duration within 1 %, mostly re-releases); a random split puts copies on both sides and inflates accuracy. |
 | D-017 | Pedal features use on-time and on-value, not a half-pedal fraction. | Audit: every CC64/CC67 event is a (value > 0, then 0) pair, so the fraction of intermediate values is exactly 0.5 in every file and carries no information. |
+| D-018 | Without a `GITHUB_TOKEN` Colab secret the setup cell clones the public URL with no credentials; the repo owner is fixed (`caganaksoyy`) instead of taken from `GITHUB_USER`. If no ATEPP zip is in `raw/`, it is downloaded with `gdown` from the public Google Drive link of the ATEPP repo and kept on Drive. `__MACOSX` resource forks in that zip are ignored when indexing MIDI files. | Project owner's choice: notebooks run without manual setup. Supersedes the manual upload in D-001/D-003 when the zip is missing. |
 
 ## Open
 

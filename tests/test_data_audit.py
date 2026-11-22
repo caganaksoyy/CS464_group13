@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import io
+import sys
+import types
 import zipfile
 from pathlib import Path
 
@@ -48,6 +50,54 @@ def test_zip_slip_is_rejected(tmp_path: Path) -> None:
 def test_missing_archive_message(tmp_path: Path) -> None:
     with pytest.raises(FileNotFoundError, match="disclaimer"):
         raw.find_archive(tmp_path)
+
+
+def _fake_gdown(monkeypatch: pytest.MonkeyPatch, payload: bytes | None, calls: list) -> None:
+    """Replace the gdown module with one that writes ``payload`` (None: raise)."""
+    def download(id: str, output: str, quiet: bool) -> str:
+        calls.append(id)
+        if payload is None:
+            raise OSError("network down")
+        Path(output).write_bytes(payload)
+        return output
+    monkeypatch.setitem(sys.modules, "gdown", types.SimpleNamespace(download=download))
+
+
+def test_ensure_dataset_downloads_missing_zip(storage: Path, fake_zip: Path,
+                                              monkeypatch: pytest.MonkeyPatch) -> None:
+    for z in (storage / "raw").glob("*.zip"):
+        z.unlink()
+    calls: list[str] = []
+    _fake_gdown(monkeypatch, fake_zip.read_bytes(), calls)
+    dataset = raw.ensure_dataset()
+    assert calls == [raw.ATEPP_GDRIVE_ID]
+    assert (storage / "raw" / raw.ATEPP_ZIP_NAME).exists()
+    assert not list((storage / "raw").glob("*.part"))
+    assert raw.index_midi_files(dataset)
+    raw.ensure_dataset()                       # second session: zip on Drive, no download
+    assert calls == [raw.ATEPP_GDRIVE_ID]
+    for z in (storage / "raw").glob("*.zip"):
+        z.unlink()
+    with pytest.raises(FileNotFoundError):
+        raw.ensure_dataset(download=False)
+
+
+@pytest.mark.parametrize("payload", [None, b"not a zip"])
+def test_failed_download_leaves_no_zip(tmp_path: Path, monkeypatch: pytest.MonkeyPatch,
+                                       payload: bytes | None) -> None:
+    _fake_gdown(monkeypatch, payload, [])
+    with pytest.raises(RuntimeError, match="by hand"):
+        raw.download_archive(tmp_path)
+    assert not list(tmp_path.iterdir())
+
+
+def test_index_ignores_macos_resource_forks(tmp_path: Path) -> None:
+    (tmp_path / "ATEPP-1.2" / "W").mkdir(parents=True)
+    (tmp_path / "__MACOSX" / "ATEPP-1.2" / "W").mkdir(parents=True)
+    (tmp_path / "ATEPP-1.2" / "W" / "00001.mid").write_bytes(b"x")
+    (tmp_path / "ATEPP-1.2" / "W" / "._00001.mid").write_bytes(b"x")
+    (tmp_path / "__MACOSX" / "ATEPP-1.2" / "W" / "00002.mid").write_bytes(b"x")
+    assert list(raw.index_midi_files(tmp_path)) == ["00001"]
 
 
 # ---- metadata ---------------------------------------------------------------------

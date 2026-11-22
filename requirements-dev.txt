@@ -8,6 +8,7 @@ matplotlib==3.11.2
 pyarrow==26.0.0
 scikit-learn==1.9.1
 xgboost==3.4.1
+gdown==6.5.2
 pytest
 nbformat
 nbclient

@@ -26,7 +26,7 @@ from pianist_id.utils.config import save_yaml
 # Packages whose versions are recorded with every run and printed by the setup cell.
 TRACKED_PACKAGES = [
     "numpy", "pandas", "scikit-learn", "torch", "pretty_midi", "symusic",
-    "xgboost", "lightgbm", "pyarrow", "matplotlib", "pyyaml", "shap",
+    "xgboost", "lightgbm", "pyarrow", "matplotlib", "pyyaml", "shap", "gdown",
 ]
 
 

@@ -1,8 +1,10 @@
-"""Locate and extract the ATEPP archive that was uploaded to Drive by hand.
+"""Locate, download if needed, and extract the ATEPP archive.
 
-We never download ATEPP ourselves (it requires accepting a disclaimer). The user puts
-the zip into ``<PIANIST_ID_ROOT>/raw/``; :func:`ensure_dataset` extracts it to fast
-local disk once per session.
+The zip lives in ``<PIANIST_ID_ROOT>/raw/`` (Drive on Colab). If none is there,
+:func:`ensure_dataset` downloads ATEPP v1.2 from the public Google Drive link of the
+ATEPP repository (github.com/tangjjbetsy/ATEPP, CC BY 4.0) with ``gdown`` and keeps it in
+``raw/``, so later sessions reuse it. The zip is then extracted to fast local disk once
+per session.
 """
 
 from __future__ import annotations
@@ -13,6 +15,8 @@ from pathlib import Path, PurePosixPath
 from pianist_id import paths
 
 EXTRACT_MARKER = ".extracted"
+ATEPP_GDRIVE_ID = "1Df2KUdqvXtgvhvzx2D10YaQRbpP23rOS"   # ATEPP-1.2.zip, linked from the ATEPP README
+ATEPP_ZIP_NAME = "ATEPP-1.2.zip"
 
 
 def find_archive(raw_dir: Path | None = None) -> Path:
@@ -51,9 +55,40 @@ def extract_archive(zip_path: Path, dest: Path) -> Path:
     return dest
 
 
-def ensure_dataset() -> Path:
-    """Find the zip on Drive, extract it to local disk if needed, return the folder."""
-    zip_path = find_archive()
+def download_archive(raw_dir: Path | None = None, file_id: str = ATEPP_GDRIVE_ID) -> Path:
+    """Download the ATEPP zip into ``raw_dir`` with gdown and return its path.
+
+    The download goes to a ``.part`` file that is renamed only after it is checked to be
+    a zip, so an interrupted download is never picked up by :func:`find_archive`.
+    """
+    import gdown   # preinstalled on Colab; only needed when the zip is missing
+
+    raw_dir = paths.ensure_dir(raw_dir or paths.raw_dir())
+    target = raw_dir / ATEPP_ZIP_NAME
+    part = target.with_name(target.name + ".part")
+    print(f"No ATEPP zip in {raw_dir}; downloading it from Google Drive (id {file_id}) ...")
+    error: Exception | None = None
+    try:   # older gdown returns None on failure, newer versions raise
+        result = gdown.download(id=file_id, output=str(part), quiet=False)
+    except Exception as e:  # noqa: BLE001 - re-raised below with a clear message
+        result, error = None, e
+    if result is None or not part.exists() or not zipfile.is_zipfile(part):
+        part.unlink(missing_ok=True)
+        raise RuntimeError(f"Downloading ATEPP (Google Drive id {file_id}) failed. Download "
+                           f"it by hand from github.com/tangjjbetsy/ATEPP into {raw_dir}.") from error
+    part.replace(target)
+    return target
+
+
+def ensure_dataset(download: bool = True) -> Path:
+    """Find the zip (downloading it if missing and ``download``), extract it to local
+    disk if needed, return the folder."""
+    try:
+        zip_path = find_archive()
+    except FileNotFoundError:
+        if not download:
+            raise
+        zip_path = download_archive()
     dest = paths.dataset_dir()
     already = (dest / EXTRACT_MARKER).exists()
     extract_archive(zip_path, dest)
@@ -76,6 +111,8 @@ def index_midi_files(dataset_dir: Path) -> dict[str, Path]:
     """
     index: dict[str, Path] = {}
     for p in dataset_dir.rglob("*"):
+        if "__MACOSX" in p.parts or p.name.startswith("._"):
+            continue    # macOS resource forks in the official zip, e.g. __MACOSX/.../._05855.mid
         if p.suffix.lower() in (".mid", ".midi") and p.is_file():
             index.setdefault(p.stem, p)
     return index

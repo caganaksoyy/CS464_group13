@@ -1,5 +1,7 @@
 # Who Is Playing? Pianist identification from expressive piano MIDI
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/caganaksoyy/CS464_group13/blob/main/notebooks/01_xgboost_baseline.ipynb) notebook 01 (XGBoost demo)
+
 Given a segment of a classical piano performance in MIDI format, predict which pianist
 played it. Many pianists in the dataset recorded the same pieces, so the notes alone
 cannot reveal the answer; models must learn expressive style (timing, dynamics,
@@ -28,8 +30,9 @@ report/             report material (later milestones)
 
 ## Running on Colab
 
-See [docs/COLAB.md](docs/COLAB.md) for the one-time setup (GitHub token as a Colab
-secret, Drive layout, uploading the ATEPP zip). Then open a notebook and *Run all*.
+See [docs/COLAB.md](docs/COLAB.md) for the one-time setup (optional GitHub token as a
+Colab secret, Drive layout; the ATEPP zip is downloaded automatically if it is not on
+Drive). Then open a notebook, e.g. with the badge above, and *Run all*.
 
 | Notebook | Purpose | Runtime |
 |---|---|---|
