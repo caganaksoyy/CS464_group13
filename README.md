@@ -9,7 +9,7 @@ articulation, pedalling). Test sets contain only compositions never seen in trai
 
 Data: ATEPP v1.2 (Zhang et al., ISMIR 2022), performance MIDI transcribed from audio.
 
-**Status:** Milestone 2 done: XGBoost baseline (demo). Next: content ablation + era check, then LogReg/SVM and PyTorch models (CNN/LSTM/Transformer).
+**Status:** Milestone 2 done: XGBoost baseline (demo). Next: content ablation + era check, then PyTorch models (CNN/LSTM/Transformer).
 
 ## Repository layout
 
